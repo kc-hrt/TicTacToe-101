@@ -8,16 +8,32 @@
 
 // The variable will change from X to O based on what player turn it is. We need to hold this so we can place an X or O on the board when they're clicked.
 let currentMarker = 'X'
-
-
+// game array
+let game = [
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""]
+]
 
 
 // this "handleClick" function is called when a box is clicked. Here, "element" will hold the same value as "this" does in the HTML. 
 // "this" is a special word in JS but "element" could have been "thing" or "el" or whatever we wanted it to be as long as we use it again in the "console.log" statement
 const handleClick = (element) => {
+  // console.log('xyz:  ' + element.id);
+
+  // get the location of the element being clicked on char1=row char2=col; expected [0-2][0-2]
+  const row = parseInt(element.id.charAt(0));
+  const col = parseInt(element.id.charAt(1));
+  // console.log('abc:  ' + row + ' , ' + col)
+  
+  // set the current mark (x or o) to array using row/col
+  game[row][col] = currentMarker;
+  // console.log('###:  ' + game[row][col]);
+  // console.log('1,1###:  ' + game[1][1]);
+
 
   // this uses the "log" method on the "console" to log out the element's id so we can see it with our human eyes
-  console.log(`The element you clicked on has an id:  ${element.id}`)
+  console.log('The element you clicked on has an id:  ${element.id}')
 
   // this next line prevents an X being changed to an O or an O being changed to an X by...
   //  checking to see if the square clicked has anything in it, if not continue
@@ -25,11 +41,6 @@ const handleClick = (element) => {
     addMarker(element.id)
   }
 }
-
-
-
-
-
 
 
 
@@ -50,17 +61,69 @@ const addMarker = (id) => {
   // .getElementById(id)
   // document
   // .innerHTML 
-
-  changeMarker()
+  
+  checkWin()
+  
 }
 
+const checkWin = () => {
+  let winText = "";
+  // horizontal checks for X
+  if ((game[0][0] === "X" && game[0][1] === "X" && game[0][2] === "X") ||
+    (game[1][0] === "X" && game[1][1] === "X" && game[1][2] === "X") ||
+    (game[2][0] === "X" && game[2][1] === "X" && game[2][2] === "X") ) {
+    // console.log("XXX Wins XXX Horizontal");
+    winText = "***   X has a Horizontal Win   ***";
 
+    // horizontal checks for O
+  } else if ((game[0][0] === "O" && game[0][1] === "O" && game[0][2] === "O") ||
+  (game[1][0] === "O" && game[1][1] === "O" && game[1][2] === "O") ||
+  (game[2][0] === "O" && game[2][1] === "O" && game[2][2] === "O") ) {
+  // console.log("OOO  Wins  OOO Horizontal");
+  winText = "***   O has a Horizontal Win   ***";
 
+    //vertical checks for X
+  } else if ((game[0][0] === "X" && game[1][0] === "X" && game[2][0] === "X") ||
+  (game[0][1] === "X" && game[1][1] === "X" && game[2][1] === "X") ||
+  (game[0][2] === "X" && game[1][2] === "X" && game[2][2] === "X") ) {
+  // console.log("XXX Wins XXX  Vertical");
+  winText = "***   X has a Vertical Win   ***";
 
+    // Vertical checks for O
+  } else if ((game[0][0] === "O" && game[1][0] === "O" && game[2][0] === "O") ||
+  (game[0][1] === "O" && game[1][1] === "O" && game[2][1] === "O") ||
+  (game[0][2] === "O" && game[1][2] === "O" && game[2][2] === "O") ) {
+  // console.log("XXX Wins OOO  Vertical");
+  winText = "***   O has a Vertical Win   ***";
 
+    // Diagonal checks for X
+  } else if ((game[0][0] === "X" && game[1][1] === "X" && game[2][2] === "X") ||
+  (game[0][2] === "X" && game[1][1] === "X" && game[2][0] === "X")) {
+  // console.log("XXX Wins OOO  Diagonal");
+  winText = "***   X has a Diagonal Win   ***";
 
+    // Diagonal checks for O
+  } else if ((game[0][0] === "O" && game[1][1] === "O" && game[2][2] === "O") ||
+  (game[0][2] === "O" && game[1][1] === "O" && game[2][0] === "O")) {
+  // console.log("XXX Wins OOO  Diagonal");
+  winText = "***   O has a Diagonal Win   ***";
 
+    // Tie game checks
+  } else if (game[0][0] != "" && game[0][1] != "" && game[0][2] != "" &&
+     game[1][0] != "" && game[1][1] != "" && game[1][2] != "" &&
+     game[2][0] != "" && game[2][1] != "" && game[2][2] != "" ) {
+       winText = "***     Tie Game     ***";
+     }
 
+  
+  // if winText is blank continue, if not blank send window alert and reset board
+  if (winText != "") {
+    window.alert(winText);
+    resetBoard()
+  } else {
+    changeMarker()
+  }
+}
 
 
 // This "changeMarker" function changes "X" to "O" in the "currentMarker" variable or "O" to "X"
@@ -71,13 +134,6 @@ const changeMarker = () => {
     currentMarker = "X"
   }
 }
-
-
-
-
-
-
-
 
 
 
@@ -95,6 +151,12 @@ const resetBoard = () => {
   // document
   // const
  
+  game = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+  ]
+
   // loops over the HTML Collection of TDs and clears out the Xs and Os
   for (i=0; i < squares.length; i++) {
 
